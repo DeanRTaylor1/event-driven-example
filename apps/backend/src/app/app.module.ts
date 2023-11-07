@@ -14,6 +14,7 @@ import { ResponsesInterceptor } from "./interceptors/responses.interceptor";
 import { RouteLoggerInterceptor } from "./interceptors/route-logger.interceptor";
 import { AuthModule } from "./modules/auth/auth.module";
 import { AuthGuard } from "./guards/auth.guard";
+import { ProductsModule } from "./modules/products/products.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthGuard } from "./guards/auth.guard";
     }),
     UsersModule,
     AuthModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -11,7 +11,7 @@
     "be:cleanup": "docker stop postgres16 && docker rm postgres16",
     "be:db:setup": "sequelize-cli db:migrate --config apps/backend/databases/config/config.js",
     "be:lint": "nx run backend:lint",
-    "be:test": "nx run backend:test"
+    "be:test": "export NODE_ENV=test && nx run backend:test"
   },
   "private": true,
   "dependencies": {
