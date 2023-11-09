@@ -8,6 +8,8 @@ import {
   IsEmail,
   Default,
   DataType,
+  CreatedAt,
+  UpdatedAt,
 } from "sequelize-typescript";
 import { RoleEnum, UserStatusEnum } from "../user.enum";
 import { ApiProperty } from "@nestjs/swagger";
@@ -54,10 +56,10 @@ export class User extends Model {
   role: string;
 
   @SnakeApiProperty()
-  @Column({ field: "created_at", type: DataType.DATE })
+  @CreatedAt
   createdAt: Date;
 
   @SnakeApiProperty()
-  @Column({ field: "updated_at", type: DataType.DATE })
+  @UpdatedAt
   updatedAt: Date;
 }

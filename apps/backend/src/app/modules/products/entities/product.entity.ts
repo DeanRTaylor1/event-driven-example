@@ -7,6 +7,8 @@ import {
   PrimaryKey,
   Table,
   Model,
+  UpdatedAt,
+  CreatedAt,
 } from "sequelize-typescript";
 import { SnakeApiProperty } from "../../base/decorators/snake-api-property";
 
@@ -40,10 +42,10 @@ export class Product extends Model {
   holdAmount?: number;
 
   @SnakeApiProperty()
-  @Column({ field: "created_at", type: DataType.DATE })
+  @CreatedAt
   createdAt: Date;
 
   @SnakeApiProperty()
-  @Column({ field: "updated_at", type: DataType.DATE })
+  @UpdatedAt
   updatedAt: Date;
 }

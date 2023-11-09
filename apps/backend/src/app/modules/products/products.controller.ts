@@ -16,6 +16,12 @@ import { RolesGuard } from "../../guards/roles.guard";
 import { RoleEnum } from "../users/user.enum";
 import { ApiBody, ApiResponse } from "@nestjs/swagger";
 import { User } from "../users/entities/user.entity";
+import { Public } from "../../decorators/public-route.decorator";
+import { Product } from "./entities/product.entity";
+import {
+  GetPagination,
+  Pagination,
+} from "../../decorators/pagination.decorator";
 
 @Controller("products")
 export class ProductsController {
@@ -27,7 +33,7 @@ export class ProductsController {
   @ApiBody({ type: CreateProductDto })
   @ApiResponse({
     status: 201,
-    type: User,
+    type: Product,
     description: "Create a user",
   })
   create(@Body() createProductDto: CreateProductDto) {
@@ -35,8 +41,15 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  @Public()
+  @ApiResponse({
+    status: 200,
+    isArray: true,
+    type: Product,
+    description: "List all products with pagination",
+  })
+  findAll(@GetPagination() pagination: Pagination) {
+    return this.productsService.findAll(pagination);
   }
 
   @Get(":id")

@@ -48,7 +48,8 @@ export class UsersController {
   @Public()
   @ApiResponse({
     status: 200,
-    type: Array<User>,
+    isArray: true,
+    type: User,
     description: "List all users",
   })
   findAll(@GetPagination() pagination: Pagination) {

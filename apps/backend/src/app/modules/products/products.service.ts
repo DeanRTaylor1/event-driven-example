@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { ProductsRepository } from "./products.repository";
+import { Product } from "./entities/product.entity";
+import { Pagination } from "../../decorators/pagination.decorator";
 
 @Injectable()
 export class ProductsService {
@@ -10,19 +12,19 @@ export class ProductsService {
     return this.productsRepository.create(createProductDto);
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll({ skip, limit }: Pagination): Promise<Array<Product>> {
+    return this.productsRepository.getAll({ skip, limit });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number): Promise<Product> {
+    return this.productsRepository.findById(id);
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number): Promise<number> {
+    return this.productsRepository.destroyById(id);
   }
 }
