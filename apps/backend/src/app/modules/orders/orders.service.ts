@@ -1,19 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
+import { ToCamel } from "@monorepo-example/common";
+import { OrdersRepository } from "./orders.repository";
+import { Pagination } from "../../decorators/pagination.decorator";
+import { CreateOrderDetailDto } from "./dto/order-detail.dto";
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return "This action adds a new order";
+  constructor(private ordersRepository: OrdersRepository) {}
+  create(
+    createOrderDto: Omit<ToCamel<CreateOrderDto>, "items">,
+    items: Array<ToCamel<CreateOrderDetailDto>>
+  ) {
+    console.log({ items });
+    return this.ordersRepository.create(createOrderDto);
   }
 
-  findAll() {
-    return `This action returns all orders`;
+  findAll({ skip, limit }: Pagination) {
+    return this.ordersRepository.getAll({ skip, limit });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} order`;
+    return this.ordersRepository.findById(id);
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
@@ -21,6 +30,10 @@ export class OrdersService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} order`;
+    return this.ordersRepository.destroyById(id);
+  }
+
+  private generateUUID() {
+    return crypto.randomUUID();
   }
 }

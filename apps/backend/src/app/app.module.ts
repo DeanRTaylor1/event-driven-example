@@ -16,6 +16,9 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { AuthGuard } from "./guards/auth.guard";
 import { ProductsModule } from "./modules/products/products.module";
 import { OrdersModule } from "./modules/orders/orders.module";
+import { Product } from "./modules/products/entities/product.entity";
+import { Order } from "./modules/orders/entities/order.entity";
+import { OrderDetail } from "./modules/orders/entities/order-detail.entity";
 
 @Module({
   imports: [
@@ -27,7 +30,7 @@ import { OrdersModule } from "./modules/orders/orders.module";
       username: env.db.username,
       password: env.db.password,
       database: env.db.database,
-      models: [User],
+      models: [User, Product, Order, OrderDetail],
     }),
     UsersModule,
     AuthModule,

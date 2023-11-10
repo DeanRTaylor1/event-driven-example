@@ -4,11 +4,12 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { ProductsRepository } from "./products.repository";
 import { Product } from "./entities/product.entity";
 import { Pagination } from "../../decorators/pagination.decorator";
+import { ToCamel } from "@monorepo-example/common";
 
 @Injectable()
 export class ProductsService {
   constructor(private productsRepository: ProductsRepository) {}
-  create(createProductDto: CreateProductDto) {
+  create(createProductDto: ToCamel<CreateProductDto>) {
     return this.productsRepository.create(createProductDto);
   }
 

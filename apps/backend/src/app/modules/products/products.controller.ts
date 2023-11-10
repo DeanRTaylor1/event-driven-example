@@ -15,21 +15,23 @@ import { Roles } from "../../decorators/roles.decorator";
 import { RolesGuard } from "../../guards/roles.guard";
 import { RoleEnum } from "../users/user.enum";
 import { ApiBody, ApiResponse } from "@nestjs/swagger";
-import { User } from "../users/entities/user.entity";
 import { Public } from "../../decorators/public-route.decorator";
 import { Product } from "./entities/product.entity";
 import {
   GetPagination,
   Pagination,
 } from "../../decorators/pagination.decorator";
+import { BodyToCamelCase } from "../../decorators/body-to-camel.decorator";
+import { ToCamel, ToSnake } from "@monorepo-example/common";
 
 @Controller("products")
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @Roles(RoleEnum.ADMIN)
-  @UseGuards(RolesGuard)
+  @Public()
+  // @Roles(RoleEnum.ADMIN)
+  // @UseGuards(RolesGuard)
   @ApiBody({ type: CreateProductDto })
   @ApiResponse({
     status: 201,

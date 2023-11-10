@@ -1,3 +1,13 @@
+import { OrdersService } from "./orders.service";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { UpdateOrderDto } from "./dto/update-order.dto";
+import { ToCamel } from "@monorepo-example/common";
+import { BodyToCamelCase } from "../../decorators/body-to-camel.decorator";
+import {
+  GetPagination,
+  Pagination,
+} from "../../decorators/pagination.decorator";
+
 import {
   Controller,
   Get,
@@ -7,22 +17,37 @@ import {
   Param,
   Delete,
 } from "@nestjs/common";
-import { OrdersService } from "./orders.service";
-import { CreateOrderDto } from "./dto/create-order.dto";
-import { UpdateOrderDto } from "./dto/update-order.dto";
+import { CreateOrderDetailDto } from "./dto/order-detail.dto";
+import { ApiBody, ApiResponse } from "@nestjs/swagger";
+import { Order } from "./entities/order.entity";
+import { Public } from "../../decorators/public-route.decorator";
 
 @Controller("orders")
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  @ApiBody({ type: CreateOrderDto })
+  @ApiResponse({
+    status: 201,
+    type: Order,
+    description: "Create an order",
+  })
+  @Public()
+  create(
+    @Body() _: CreateOrderDto,
+    @BodyToCamelCase() createOrderDto: ToCamel<CreateOrderDto>
+  ) {
+    const { items, ...data } = createOrderDto;
+    return this.ordersService.create(
+      data,
+      items as unknown as Array<ToCamel<CreateOrderDetailDto>>
+    );
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(@GetPagination() pagination: Pagination) {
+    return this.ordersService.findAll(pagination);
   }
 
   @Get(":id")

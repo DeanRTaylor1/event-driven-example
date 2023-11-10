@@ -8,7 +8,7 @@ import { AllExceptionsFilter } from "./app/filters/all-exceptions.filter";
 class NestApp {
   private app: INestApplication;
   public port: string | number = process.env.PORT || 3000;
-  private readonly globalPrefix = "api";
+  private readonly globalPrefix = "api/v1";
 
   constructor() {
     this.bootstrap();
