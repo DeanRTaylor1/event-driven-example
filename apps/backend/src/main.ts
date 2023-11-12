@@ -10,6 +10,7 @@ import { join } from "path";
 import winston from "winston";
 import winstonDaily from "winston-daily-rotate-file";
 import { env } from "./app/modules/config/env";
+import { HandleErrorsInterceptor } from "./app/interceptors/errors.interceptor";
 
 class NestApp {
   private app: INestApplication;

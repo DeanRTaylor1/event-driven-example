@@ -47,7 +47,6 @@ export class UsersController {
     @Body() _: CreateUserDto,
     @BodyToCamelCase() body: ToCamel<CreateUserDto>
   ): Promise<User> {
-    this.logger.error(`Request body email: ${JSON.stringify(body)}`);
     return await this.usersService.create(body);
   }
 
