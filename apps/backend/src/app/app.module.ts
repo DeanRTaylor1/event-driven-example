@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -39,6 +39,7 @@ import { OrderDetail } from "./modules/orders/entities/order-detail.entity";
   ],
   controllers: [AppController],
   providers: [
+    Logger,
     AppService,
     {
       provide: APP_GUARD,

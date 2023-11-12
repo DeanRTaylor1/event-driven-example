@@ -8,6 +8,7 @@ import {
   Delete,
   UsePipes,
   UseGuards,
+  Logger,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -28,7 +29,10 @@ import {
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly logger: Logger
+  ) {}
 
   @Post()
   @ApiBody({ type: CreateUserDto })
@@ -39,8 +43,11 @@ export class UsersController {
   })
   @Public()
   @UsePipes(HashPasswordPipe)
-  async create(@BodyToCamelCase() body: ToCamel<CreateUserDto>): Promise<User> {
-    console.log({ body });
+  async create(
+    @Body() _: CreateUserDto,
+    @BodyToCamelCase() body: ToCamel<CreateUserDto>
+  ): Promise<User> {
+    this.logger.error(`Request body email: ${JSON.stringify(body)}`);
     return await this.usersService.create(body);
   }
 
