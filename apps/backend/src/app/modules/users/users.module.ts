@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { UsersController } from "./users.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
@@ -10,7 +10,13 @@ import { AuthModule } from "../auth/auth.module";
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository, ComparePasswordPipe, AuthService],
+  providers: [
+    UsersService,
+    UsersRepository,
+    ComparePasswordPipe,
+    AuthService,
+    Logger,
+  ],
   imports: [SequelizeModule.forFeature([User]), AuthModule],
   exports: [SequelizeModule.forFeature([User]), UsersService, UsersRepository],
 })
