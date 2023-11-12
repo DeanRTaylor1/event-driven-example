@@ -19,6 +19,7 @@ import { OrdersModule } from "./modules/orders/orders.module";
 import { Product } from "./modules/products/entities/product.entity";
 import { Order } from "./modules/orders/entities/order.entity";
 import { OrderDetail } from "./modules/orders/entities/order-detail.entity";
+import { HandleErrorsInterceptor } from "./interceptors/errors.interceptor";
 
 @Module({
   imports: [
@@ -56,6 +57,10 @@ import { OrderDetail } from "./modules/orders/entities/order-detail.entity";
     {
       provide: APP_INTERCEPTOR,
       useClass: RouteLoggerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HandleErrorsInterceptor,
     },
   ],
 })
