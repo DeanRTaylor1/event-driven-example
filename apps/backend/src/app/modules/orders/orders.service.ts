@@ -1,20 +1,50 @@
 import { Injectable } from "@nestjs/common";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
-import { ToCamel } from "@monorepo-example/common";
+import { ICreateAttributes, ToCamel } from "@monorepo-example/common";
 import { OrdersRepository } from "./orders.repository";
 import { Pagination } from "../../decorators/pagination.decorator";
 import { CreateOrderDetailDto } from "./dto/order-detail.dto";
+import { OrderDetailRepository } from "./order-detail.repository";
+import { OrderDetail } from "./entities/order-detail.entity";
+import { Order } from "./entities/order.entity";
+import { Product } from "../products/entities/product.entity";
+import { ProductsRepository } from "../products/products.repository";
 
 @Injectable()
 export class OrdersService {
-  constructor(private ordersRepository: OrdersRepository) {}
-  create(
+  constructor(
+    private ordersRepository: OrdersRepository,
+    private orderDetailRepository: OrderDetailRepository,
+    private productsRepository: ProductsRepository
+  ) {}
+  async create(
     createOrderDto: Omit<ToCamel<CreateOrderDto>, "items">,
-    items: Array<ToCamel<CreateOrderDetailDto>>
-  ) {
-    console.log({ items });
-    return this.ordersRepository.create(createOrderDto);
+    items: Array<number>
+  ): Promise<Order> {
+    const orderNumber = this.generateUUID();
+    const orderProps = {
+      ...createOrderDto,
+      orderNumber,
+    };
+
+    const order = await this.ordersRepository.create(orderProps);
+
+    const { id: orderId } = order;
+
+    console.log(items);
+
+    const products = await this.productsRepository.findManyById(items);
+    const orderDetailProps = this.createOrderDetailProps(products, orderId);
+
+    const orderDetails = await this.orderDetailRepository.createMany(
+      orderDetailProps
+    );
+
+    return {
+      ...order.get(),
+      items: orderDetails,
+    };
   }
 
   findAll({ skip, limit }: Pagination) {
@@ -35,5 +65,19 @@ export class OrdersService {
 
   private generateUUID() {
     return crypto.randomUUID();
+  }
+
+  private createOrderDetailProps(
+    products: Array<Product>,
+    orderId: number
+  ): Array<ICreateAttributes<OrderDetail>> {
+    return products.map((product) => {
+      const { id, ...productProps } = product.get();
+      return {
+        ...productProps,
+        productId: id,
+        orderId,
+      };
+    });
   }
 }

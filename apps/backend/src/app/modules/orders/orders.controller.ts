@@ -17,7 +17,6 @@ import {
   Param,
   Delete,
 } from "@nestjs/common";
-import { CreateOrderDetailDto } from "./dto/order-detail.dto";
 import { ApiBody, ApiResponse } from "@nestjs/swagger";
 import { Order } from "./entities/order.entity";
 import { Public } from "../../decorators/public-route.decorator";
@@ -39,10 +38,8 @@ export class OrdersController {
     @BodyToCamelCase() createOrderDto: ToCamel<CreateOrderDto>
   ) {
     const { items, ...data } = createOrderDto;
-    return this.ordersService.create(
-      data,
-      items as unknown as Array<ToCamel<CreateOrderDetailDto>>
-    );
+    console.log({ items });
+    return this.ordersService.create(data, items as Array<number>);
   }
 
   @Get()

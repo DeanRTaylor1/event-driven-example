@@ -4,23 +4,21 @@ import {
   OrderStatusEnum,
   ToSnake,
 } from "@monorepo-example/common";
-import { IsEmpty } from "@nestjs/class-validator";
+import { ArrayMinSize, IsEmpty } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsArray,
-  IsDate,
   IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
-  ValidateNested,
 } from "class-validator";
-import { CreateOrderDetailDto } from "./order-detail.dto";
-import { Type } from "class-transformer";
 
-export class CreateOrderDto implements ToSnake<ICreateAttributes<IOrder>> {
+export class CreateOrderDto
+  implements Omit<ToSnake<ICreateAttributes<IOrder>>, "items">
+{
   @IsEmpty()
   @IsOptional()
   order_number: string;
@@ -45,10 +43,10 @@ export class CreateOrderDto implements ToSnake<ICreateAttributes<IOrder>> {
   @IsOptional()
   expected_delivery_time: Date;
 
-  @ApiProperty({ type: CreateOrderDetailDto, isArray: true })
+  @ApiProperty()
   @IsNotEmpty()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateOrderDetailDto)
-  items: CreateOrderDetailDto[];
+  @ArrayMinSize(1)
+  @IsNumber({}, { each: true })
+  items: Array<number>;
 }

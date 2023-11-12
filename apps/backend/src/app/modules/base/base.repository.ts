@@ -1,5 +1,5 @@
 import { ModelCtor, Model } from "sequelize-typescript";
-import { WhereOptions } from "sequelize";
+import { Attributes, Op, WhereOptions } from "sequelize";
 import { ICreateAttributes } from "@monorepo-example/common";
 
 export abstract class BaseRepository<M extends Model> {
@@ -11,6 +11,16 @@ export abstract class BaseRepository<M extends Model> {
 
   async findById(id: number): Promise<M> {
     return this.model.findByPk(id);
+  }
+
+  async findManyById(ids: Array<number>): Promise<Array<M>> {
+    return this.model.findAll({
+      where: {
+        id: {
+          [Op.in]: ids,
+        },
+      } as WhereOptions<Attributes<M>>,
+    });
   }
 
   async getAll({ skip, limit }): Promise<Array<M>> {
