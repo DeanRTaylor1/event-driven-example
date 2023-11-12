@@ -4,5 +4,15 @@ enum OrderStatusEnum {
   CANCELLED = "cancelled",
   FULFILLED = "fulfilled",
 }
+enum BasketStatusEnum {
+  ACTIVE = "active",
+  CLEARED = "cleared",
+  CHECKED_OUT = "checked-out",
+}
 
-export { OrderStatusEnum };
+enum BasketItemStatusEnum {
+  ACTIVE = "active",
+  REMOVED = "removed",
+}
+
+export { OrderStatusEnum, BasketStatusEnum, BasketItemStatusEnum };

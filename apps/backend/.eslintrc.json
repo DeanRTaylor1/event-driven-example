@@ -34,7 +34,10 @@
         ],
         "max-params": [
           "error",
-          2
+          2,
+          {
+            "ignoreConstructors": true
+          }
         ],
         "semi": [
           "error",
@@ -52,5 +55,5 @@
         ]
       }
     }
-  ]
+  ],
 }

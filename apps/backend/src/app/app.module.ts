@@ -1,5 +1,4 @@
 import { Logger, Module } from "@nestjs/common";
-
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule } from "./modules/config/config.module";
@@ -20,6 +19,7 @@ import { Product } from "./modules/products/entities/product.entity";
 import { Order } from "./modules/orders/entities/order.entity";
 import { OrderDetail } from "./modules/orders/entities/order-detail.entity";
 import { HandleErrorsInterceptor } from "./interceptors/errors.interceptor";
+import { BasketsModule } from "./modules/baskets/baskets.module";
 
 @Module({
   imports: [
@@ -37,6 +37,7 @@ import { HandleErrorsInterceptor } from "./interceptors/errors.interceptor";
     AuthModule,
     ProductsModule,
     OrdersModule,
+    BasketsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,9 +1,8 @@
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
-
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     return await queryInterface.createTable("order_details", {
       id: {
         allowNull: false,
@@ -11,14 +10,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      orderId: {
+      basketId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "orders",
+          model: "baskets",
           key: "id",
         },
-        field: "order_id",
+        field: "basket_id",
         onDelete: "cascade",
         onUpdate: "cascade",
       },
@@ -41,6 +40,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DECIMAL(10, 2),
       },
+      status: {
+        type: Sequelize.ENUM("active", "removed"),
+        default: "active",
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -54,7 +58,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, _Sequelize) => {
-    return await queryInterface.dropTable("order-details");
+  async down(queryInterface, Sequelize) {
+    return await queryInterface.dropTable("basket-detail");
   },
 };

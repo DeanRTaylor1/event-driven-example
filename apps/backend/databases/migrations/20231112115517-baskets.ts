@@ -1,5 +1,7 @@
 "use strict";
 
+/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("baskets", {
@@ -23,6 +25,7 @@ module.exports = {
       status: {
         type: Sequelize.ENUM("active", "cleared", "checked-out"),
         allowNull: false,
+        default: "active",
       },
       createdAt: {
         allowNull: false,
