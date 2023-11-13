@@ -13,7 +13,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsPositive,
 } from "class-validator";
 
 export class CreateOrderDto
@@ -28,15 +27,14 @@ export class CreateOrderDto
   @IsNumber()
   user_id: number;
 
-  @IsEnum(OrderStatusEnum)
-  @IsOptional()
-  status: OrderStatusEnum;
-
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  @IsPositive()
-  total_amount: number;
+  basket_id: number;
+
+  @IsEnum(OrderStatusEnum)
+  @IsOptional()
+  status: OrderStatusEnum;
 
   @ApiProperty()
   @IsDateString()

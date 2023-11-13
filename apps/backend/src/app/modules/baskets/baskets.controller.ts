@@ -10,13 +10,20 @@ import {
 import { BasketsService } from "./baskets.service";
 import { CreateBasketDto } from "./dto/create-basket.dto";
 import { UpdateBasketDto } from "./dto/update-basket.dto";
+import { Public } from "../../decorators/public-route.decorator";
+import { BodyToCamelCase } from "../../decorators/body-to-camel.decorator";
+import { ToCamel } from "@monorepo-example/common";
 
 @Controller("baskets")
 export class BasketsController {
   constructor(private readonly basketsService: BasketsService) {}
 
   @Post()
-  create(@Body() createBasketDto: CreateBasketDto) {
+  @Public()
+  create(
+    @Body() _: CreateBasketDto,
+    @BodyToCamelCase() createBasketDto: ToCamel<CreateBasketDto>
+  ) {
     return this.basketsService.create(createBasketDto);
   }
 

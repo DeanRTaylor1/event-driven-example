@@ -6,8 +6,9 @@ interface IOrder {
   id: number;
   orderNumber: string;
   userId: number;
+  basketId: number;
   status: OrderStatusEnum;
-  totalAmount: number;
+  totalAmount?: number;
   expectedDeliveryTime: Date;
   items: Array<Omit<ToSnake<ICreateAttributes<IOrderDetail>>, "order_id">>;
   createdAt: Date;

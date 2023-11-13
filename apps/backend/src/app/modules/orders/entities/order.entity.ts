@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { HasMany, Model } from "sequelize-typescript";
+import { HasMany, HasOne, Model } from "sequelize-typescript";
 import {
   AutoIncrement,
   Column,
@@ -16,6 +16,7 @@ import { SnakeApiProperty } from "../../base/decorators/snake-api-property";
 import { User } from "../../users/entities/user.entity";
 import { OrderStatusEnum } from "@monorepo-example/common";
 import { OrderDetail } from "./order-detail.entity";
+import { Basket } from "../../baskets/entities/basket.entity";
 
 @Table({ tableName: "orders", timestamps: true, underscored: true })
 export class Order extends Model {
@@ -34,6 +35,11 @@ export class Order extends Model {
   @Column({ field: "user_id", type: DataType.STRING })
   @ForeignKey(() => User)
   userId: number;
+
+  @SnakeApiProperty()
+  @Column({ field: "basket_id", type: DataType.INTEGER })
+  @ForeignKey(() => Basket)
+  basketId: number;
 
   @ApiProperty()
   @Default(OrderStatusEnum.PENDING)
@@ -57,5 +63,8 @@ export class Order extends Model {
   updatedAt: Date;
 
   @HasMany(() => OrderDetail)
-  items: Array<OrderDetail>;
+  items?: Array<OrderDetail>;
+
+  @HasOne(() => Basket)
+  basket?: Basket;
 }

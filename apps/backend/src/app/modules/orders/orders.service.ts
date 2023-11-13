@@ -1,7 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
-import { ICreateAttributes, ToCamel } from "@monorepo-example/common";
+import {
+  ICreateAttributes,
+  OrderStatusEnum,
+  ToCamel,
+} from "@monorepo-example/common";
 import { OrdersRepository } from "./orders.repository";
 import { Pagination } from "../../decorators/pagination.decorator";
 import { CreateOrderDetailDto } from "./dto/order-detail.dto";
@@ -22,19 +26,23 @@ export class OrdersService {
     createOrderDto: Omit<ToCamel<CreateOrderDto>, "items">,
     items: Array<number>
   ): Promise<Order> {
+    const products = await this.productsRepository.findManyById(items);
+
+    const totalAmount = this.calculateTotalAmount(products);
+
     const orderNumber = this.generateUUID();
+
     const orderProps = {
       ...createOrderDto,
       orderNumber,
+      totalAmount,
+      status: OrderStatusEnum.PENDING,
     };
 
     const order = await this.ordersRepository.create(orderProps);
 
     const { id: orderId } = order;
 
-    console.log(items);
-
-    const products = await this.productsRepository.findManyById(items);
     const orderDetailProps = this.createOrderDetailProps(products, orderId);
 
     const orderDetails = await this.orderDetailRepository.createMany(
@@ -61,6 +69,10 @@ export class OrdersService {
 
   remove(id: number) {
     return this.ordersRepository.destroyById(id);
+  }
+
+  private calculateTotalAmount(products: Array<Product>): number {
+    return products.reduce((a, b) => a + Number(b.price), 0);
   }
 
   private generateUUID() {

@@ -38,7 +38,7 @@ export class OrdersController {
     @BodyToCamelCase() createOrderDto: ToCamel<CreateOrderDto>
   ) {
     const { items, ...data } = createOrderDto;
-    console.log({ items });
+
     return this.ordersService.create(data, items as Array<number>);
   }
 

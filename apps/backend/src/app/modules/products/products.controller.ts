@@ -11,9 +11,6 @@ import {
 import { ProductsService } from "./products.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { Roles } from "../../decorators/roles.decorator";
-import { RolesGuard } from "../../guards/roles.guard";
-import { RoleEnum } from "../users/user.enum";
 import { ApiBody, ApiResponse } from "@nestjs/swagger";
 import { Public } from "../../decorators/public-route.decorator";
 import { Product } from "./entities/product.entity";
@@ -21,8 +18,6 @@ import {
   GetPagination,
   Pagination,
 } from "../../decorators/pagination.decorator";
-import { BodyToCamelCase } from "../../decorators/body-to-camel.decorator";
-import { ToCamel, ToSnake } from "@monorepo-example/common";
 
 @Controller("products")
 export class ProductsController {

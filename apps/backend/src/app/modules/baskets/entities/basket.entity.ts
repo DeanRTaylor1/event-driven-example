@@ -14,6 +14,8 @@ import {
 import { SnakeApiProperty } from "../../base/decorators/snake-api-property";
 import { User } from "../../users/entities/user.entity";
 import { BasketStatusEnum } from "@monorepo-example/common";
+import { BasketDetail } from "./basket-detail.entity";
+import { Order } from "../../orders/entities/order.entity";
 
 @Table({ tableName: "baskets", timestamps: true, underscored: true })
 export class Basket extends Model {
@@ -28,6 +30,10 @@ export class Basket extends Model {
   @ForeignKey(() => User)
   userId: number;
 
+  @SnakeApiProperty()
+  @Column({ field: "total_amount", type: DataType.DECIMAL(10, 2) })
+  totalAmount: number;
+
   @ApiProperty()
   @Default(BasketStatusEnum.ACTIVE)
   @Column(DataType.ENUM(...Object.values(BasketStatusEnum)))
@@ -40,4 +46,7 @@ export class Basket extends Model {
   @SnakeApiProperty()
   @UpdatedAt
   updatedAt: Date;
+
+  @HasMany(() => BasketDetail)
+  items?: Array<BasketDetail>;
 }

@@ -1,6 +1,7 @@
 import { ModelCtor, Model } from "sequelize-typescript";
 import { Attributes, Op, WhereOptions } from "sequelize";
 import { ICreateAttributes } from "@monorepo-example/common";
+import { MakeNullishOptional } from "sequelize/types/utils";
 
 export abstract class BaseRepository<M extends Model> {
   protected model: ModelCtor<M>;
@@ -30,6 +31,12 @@ export abstract class BaseRepository<M extends Model> {
   async destroyById(id: number): Promise<number> {
     const where: WhereOptions = { id };
     return this.model.destroy({ where });
+  }
+
+  async createMany(items: Array<ICreateAttributes<M>>): Promise<Array<M>> {
+    return this.model.bulkCreate(
+      items as Array<MakeNullishOptional<M["_creationAttributes"]>>
+    );
   }
 
   abstract create(data: ICreateAttributes<M["_attributes"]>): Promise<M>;

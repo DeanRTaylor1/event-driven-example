@@ -9,7 +9,7 @@ import { ToCamel } from "@monorepo-example/common";
 @Injectable()
 export class ProductsService {
   constructor(private productsRepository: ProductsRepository) {}
-  create(createProductDto: ToCamel<CreateProductDto>) {
+  async create(createProductDto: ToCamel<CreateProductDto>): Promise<Product> {
     return this.productsRepository.create(createProductDto);
   }
 

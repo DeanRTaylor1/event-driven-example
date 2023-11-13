@@ -22,6 +22,11 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
+      totalAmount: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+        field: "total_amount",
+      },
       status: {
         type: Sequelize.ENUM("active", "cleared", "checked-out"),
         allowNull: false,

@@ -27,6 +27,17 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
+      basketId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        field: "basket_id",
+        references: {
+          model: "baskets",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
       status: {
         type: Sequelize.ENUM("pending", "paid", "cancelled", "fulfilled"),
         allowNull: false,
