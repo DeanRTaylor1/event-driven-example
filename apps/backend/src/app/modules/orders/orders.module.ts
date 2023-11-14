@@ -8,6 +8,8 @@ import { OrderDetail } from "./entities/order-detail.entity";
 import { OrderDetailRepository } from "./order-detail.repository";
 import { ProductsRepository } from "../products/products.repository";
 import { Product } from "../products/entities/product.entity";
+import { Basket } from "../baskets/entities/basket.entity";
+import { BasketsRepository } from "../baskets/baskets.repository";
 
 @Module({
   controllers: [OrdersController],
@@ -16,8 +18,9 @@ import { Product } from "../products/entities/product.entity";
     OrdersRepository,
     OrderDetailRepository,
     ProductsRepository,
+    BasketsRepository,
   ],
-  imports: [SequelizeModule.forFeature([Order, OrderDetail, Product])],
+  imports: [SequelizeModule.forFeature([Order, OrderDetail, Product, Basket])],
   exports: [
     SequelizeModule.forFeature([Order]),
     OrdersService,

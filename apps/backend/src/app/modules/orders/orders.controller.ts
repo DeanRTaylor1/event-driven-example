@@ -37,12 +37,11 @@ export class OrdersController {
     @Body() _: CreateOrderDto,
     @BodyToCamelCase() createOrderDto: ToCamel<CreateOrderDto>
   ) {
-    const { items, ...data } = createOrderDto;
-
-    return this.ordersService.create(data, items as Array<number>);
+    return this.ordersService.create(createOrderDto);
   }
 
   @Get()
+  @Public()
   findAll(@GetPagination() pagination: Pagination) {
     return this.ordersService.findAll(pagination);
   }

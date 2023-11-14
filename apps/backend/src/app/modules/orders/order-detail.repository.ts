@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { BaseRepository } from "../base/base.repository";
 import { ICreateAttributes } from "@monorepo-example/common";
 import { OrderDetail } from "./entities/order-detail.entity";
-import { Order } from "sequelize";
+import { Order, Transaction, WhereOptions } from "sequelize";
 
 @Injectable()
 export class OrderDetailRepository extends BaseRepository<OrderDetail> {
@@ -19,8 +19,16 @@ export class OrderDetailRepository extends BaseRepository<OrderDetail> {
   }
 
   async createMany(
-    items: Array<ICreateAttributes<OrderDetail>>
+    items: Array<ICreateAttributes<OrderDetail>>,
+    transaction?: Transaction
   ): Promise<Array<OrderDetail>> {
-    return this.model.bulkCreate(items);
+    return this.model.bulkCreate(items, { transaction });
+  }
+
+  update(
+    data: Partial<any>,
+    where: WhereOptions
+  ): Promise<[affectedCount: number]> {
+    throw new Error("Method not implemented.");
   }
 }

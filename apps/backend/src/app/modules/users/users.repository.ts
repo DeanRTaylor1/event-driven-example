@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { BaseRepository } from "../base/base.repository";
 import { ICreateAttributes } from "@monorepo-example/common";
 import { User } from "./entities/user.entity";
+import { WhereOptions } from "sequelize";
 
 @Injectable()
 export class UsersRepository extends BaseRepository<User> {
@@ -13,11 +14,18 @@ export class UsersRepository extends BaseRepository<User> {
     super(userModel);
   }
 
-  async create(data: ICreateAttributes<User>): Promise<User> {
+  create(data: ICreateAttributes<User>): Promise<User> {
     return this.model.create(data);
   }
 
-  async findByEmail(email: string): Promise<User> {
+  findByEmail(email: string): Promise<User> {
     return this.model.findOne({ where: { email } });
+  }
+
+  update(
+    data: Partial<User>,
+    where: WhereOptions
+  ): Promise<[affectedCount: number]> {
+    return this.model.update({ data }, { where });
   }
 }

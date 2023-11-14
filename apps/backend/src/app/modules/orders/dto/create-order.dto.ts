@@ -40,11 +40,4 @@ export class CreateOrderDto
   @IsDateString()
   @IsOptional()
   expected_delivery_time: Date;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsArray()
-  @ArrayMinSize(1)
-  @IsNumber({}, { each: true })
-  items: Array<number>;
 }

@@ -13,6 +13,10 @@ import { UpdateBasketDto } from "./dto/update-basket.dto";
 import { Public } from "../../decorators/public-route.decorator";
 import { BodyToCamelCase } from "../../decorators/body-to-camel.decorator";
 import { ToCamel } from "@monorepo-example/common";
+import {
+  GetPagination,
+  Pagination,
+} from "../../decorators/pagination.decorator";
 
 @Controller("baskets")
 export class BasketsController {
@@ -28,8 +32,9 @@ export class BasketsController {
   }
 
   @Get()
-  findAll() {
-    return this.basketsService.findAll();
+  @Public()
+  findAll(@GetPagination() pagination: Pagination) {
+    return this.basketsService.findAll(pagination);
   }
 
   @Get(":id")

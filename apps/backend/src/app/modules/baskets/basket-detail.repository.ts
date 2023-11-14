@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { BaseRepository } from "../base/base.repository";
 import { ICreateAttributes } from "@monorepo-example/common";
 import { BasketDetail } from "./entities/basket-detail.entity";
+import { WhereOptions } from "sequelize";
 
 @Injectable()
 export class BasketDetailRepository extends BaseRepository<BasketDetail> {
@@ -17,5 +18,12 @@ export class BasketDetailRepository extends BaseRepository<BasketDetail> {
     data: Omit<ICreateAttributes<BasketDetail>, "items">
   ): Promise<BasketDetail> {
     return this.model.create(data);
+  }
+
+  update(
+    data: Partial<any>,
+    where: WhereOptions
+  ): Promise<[affectedCount: number]> {
+    throw new Error("Method not implemented.");
   }
 }

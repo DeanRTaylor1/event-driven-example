@@ -13,6 +13,7 @@ import {
 import { Basket } from "./entities/basket.entity";
 import { BasketDetail } from "./entities/basket-detail.entity";
 import { Product } from "../products/entities/product.entity";
+import { Pagination } from "../../decorators/pagination.decorator";
 
 @Injectable()
 export class BasketsService {
@@ -40,8 +41,6 @@ export class BasketsService {
 
     const basketDetailProps = this.createBasketDetailProps(products, basketId);
 
-    console.log({ basketDetailProps });
-
     const basketDetails = await this.basketsDetailRepository.createMany(
       basketDetailProps
     );
@@ -52,8 +51,8 @@ export class BasketsService {
     };
   }
 
-  findAll() {
-    return `This action returns all baskets`;
+  findAll({ skip, limit }: Pagination) {
+    return this.basketsRepository.getAll({ skip, limit });
   }
 
   findOne(id: number) {

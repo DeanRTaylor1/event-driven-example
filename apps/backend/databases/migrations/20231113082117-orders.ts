@@ -35,6 +35,7 @@ module.exports = {
           model: "baskets",
           key: "id",
         },
+        unique: true,
         onDelete: "cascade",
         onUpdate: "cascade",
       },

@@ -37,6 +37,7 @@ export class Order extends Model {
   userId: number;
 
   @SnakeApiProperty()
+  @Unique
   @Column({ field: "basket_id", type: DataType.INTEGER })
   @ForeignKey(() => Basket)
   basketId: number;

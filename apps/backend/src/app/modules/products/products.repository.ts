@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { BaseRepository } from "../base/base.repository";
 import { ICreateAttributes } from "@monorepo-example/common";
 import { Product } from "./entities/product.entity";
+import { WhereOptions } from "sequelize";
 
 @Injectable()
 export class ProductsRepository extends BaseRepository<Product> {
@@ -15,5 +16,12 @@ export class ProductsRepository extends BaseRepository<Product> {
 
   async create(data: ICreateAttributes<Product>): Promise<Product> {
     return this.model.create(data);
+  }
+
+  async update(
+    data: Partial<Product>,
+    where: WhereOptions
+  ): Promise<[affectedCount: number]> {
+    return this.model.update({ data }, { where });
   }
 }

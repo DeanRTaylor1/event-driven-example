@@ -39,5 +39,10 @@ export abstract class BaseRepository<M extends Model> {
     );
   }
 
+  abstract update(
+    data: Partial<M["_attributes"]>,
+    where: WhereOptions
+  ): Promise<[affectedCount: number]>;
+
   abstract create(data: ICreateAttributes<M["_attributes"]>): Promise<M>;
 }
