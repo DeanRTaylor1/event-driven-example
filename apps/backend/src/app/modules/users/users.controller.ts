@@ -29,10 +29,7 @@ import {
 
 @Controller("users")
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly logger: Logger
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   @ApiBody({ type: CreateUserDto })

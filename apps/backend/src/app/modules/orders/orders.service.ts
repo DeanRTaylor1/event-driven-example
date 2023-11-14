@@ -1,34 +1,42 @@
-import { Injectable } from "@nestjs/common";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 import {
+  BasketStatusEnum,
   ICreateAttributes,
   OrderStatusEnum,
   ToCamel,
 } from "@monorepo-example/common";
 import { OrdersRepository } from "./orders.repository";
 import { Pagination } from "../../decorators/pagination.decorator";
-import { CreateOrderDetailDto } from "./dto/order-detail.dto";
 import { OrderDetailRepository } from "./order-detail.repository";
 import { OrderDetail } from "./entities/order-detail.entity";
 import { Order } from "./entities/order.entity";
-import { Product } from "../products/entities/product.entity";
-import { ProductsRepository } from "../products/products.repository";
+import { BasketsRepository } from "../baskets/baskets.repository";
+import { Basket } from "../baskets/entities/basket.entity";
+import { BasketDetail } from "../baskets/entities/basket-detail.entity";
+
+import { Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 
 @Injectable()
 export class OrdersService {
   constructor(
     private ordersRepository: OrdersRepository,
     private orderDetailRepository: OrderDetailRepository,
-    private productsRepository: ProductsRepository
+    private basketsRepository: BasketsRepository,
+    private sequelizeInstance: Sequelize,
+    private logger: Logger
   ) {}
   async create(
-    createOrderDto: Omit<ToCamel<CreateOrderDto>, "items">,
-    items: Array<number>
+    createOrderDto: Omit<ToCamel<CreateOrderDto>, "items">
   ): Promise<Order> {
-    const products = await this.productsRepository.findManyById(items);
+    const { basketId } = createOrderDto;
+    const basket = await this.getBasketItems(basketId);
 
-    const totalAmount = this.calculateTotalAmount(products);
+    const { items: basketItems } = basket;
+
+    const totalAmount = this.calculateTotalAmount(basketItems);
 
     const orderNumber = this.generateUUID();
 
@@ -39,20 +47,39 @@ export class OrdersService {
       status: OrderStatusEnum.PENDING,
     };
 
-    const order = await this.ordersRepository.create(orderProps);
+    const transaction = await this.sequelizeInstance.transaction();
+    try {
+      const order = await this.ordersRepository.create(orderProps, transaction);
 
-    const { id: orderId } = order;
+      const { id: orderId } = order;
 
-    const orderDetailProps = this.createOrderDetailProps(products, orderId);
+      const orderDetailProps = this.createOrderDetailProps(
+        basketItems,
+        orderId
+      );
 
-    const orderDetails = await this.orderDetailRepository.createMany(
-      orderDetailProps
-    );
+      const orderDetails = await this.orderDetailRepository.createMany(
+        orderDetailProps,
+        transaction
+      );
 
-    return {
-      ...order.get(),
-      items: orderDetails,
-    };
+      await this.checkoutBasket(basketId, transaction);
+
+      await transaction.commit();
+
+      return {
+        ...order.get(),
+        items: orderDetails,
+      };
+    } catch (error) {
+      await transaction.rollback();
+      this.logger.error(error);
+
+      throw new HttpException(
+        "Something went wrong",
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
   }
 
   findAll({ skip, limit }: Pagination) {
@@ -71,8 +98,8 @@ export class OrdersService {
     return this.ordersRepository.destroyById(id);
   }
 
-  private calculateTotalAmount(products: Array<Product>): number {
-    return products.reduce((a, b) => a + Number(b.price), 0);
+  private calculateTotalAmount(items: Array<BasketDetail>): number {
+    return items.reduce((a, b) => a + Number(b.price), 0);
   }
 
   private generateUUID() {
@@ -80,16 +107,37 @@ export class OrdersService {
   }
 
   private createOrderDetailProps(
-    products: Array<Product>,
+    items: Array<BasketDetail>,
     orderId: number
   ): Array<ICreateAttributes<OrderDetail>> {
-    return products.map((product) => {
-      const { id, ...productProps } = product.get();
+    return items.map((item) => {
+      const { id, ...basketDetailProps } = item.get();
       return {
-        ...productProps,
-        productId: id,
+        ...basketDetailProps,
         orderId,
       };
     });
+  }
+
+  private async getBasketItems(basketId: number): Promise<Basket> {
+    const basket = await this.basketsRepository.getActiveItemsByBasketId(
+      basketId
+    );
+    if (!basket) {
+      throw new HttpException("Can not find basket.", HttpStatus.BAD_REQUEST);
+    }
+
+    return basket;
+  }
+
+  private async checkoutBasket(
+    basketId: number,
+    transaction: Transaction
+  ): Promise<[affectedCount: number]> {
+    return this.basketsRepository.updateStatus(
+      BasketStatusEnum.CHECKED_OUT,
+      basketId,
+      transaction
+    );
   }
 }

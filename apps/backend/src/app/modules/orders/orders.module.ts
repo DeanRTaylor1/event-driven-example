@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 import { OrdersService } from "./orders.service";
 import { OrdersController } from "./orders.controller";
 import { OrdersRepository } from "./orders.repository";
@@ -19,6 +19,7 @@ import { BasketsRepository } from "../baskets/baskets.repository";
     OrderDetailRepository,
     ProductsRepository,
     BasketsRepository,
+    Logger,
   ],
   imports: [SequelizeModule.forFeature([Order, OrderDetail, Product, Basket])],
   exports: [
