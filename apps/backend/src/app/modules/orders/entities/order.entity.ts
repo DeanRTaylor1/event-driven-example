@@ -64,7 +64,4 @@ export class Order extends Model {
 
   @HasMany(() => OrderDetail)
   items?: Array<OrderDetail>;
-
-  @HasOne(() => Basket)
-  basket?: Basket;
 }

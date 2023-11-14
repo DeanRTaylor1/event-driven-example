@@ -20,6 +20,8 @@ import { Order } from "./modules/orders/entities/order.entity";
 import { OrderDetail } from "./modules/orders/entities/order-detail.entity";
 import { HandleErrorsInterceptor } from "./interceptors/errors.interceptor";
 import { BasketsModule } from "./modules/baskets/baskets.module";
+import { Basket } from "./modules/baskets/entities/basket.entity";
+import { BasketDetail } from "./modules/baskets/entities/basket-detail.entity";
 
 @Module({
   imports: [
@@ -31,7 +33,7 @@ import { BasketsModule } from "./modules/baskets/baskets.module";
       username: env.db.username,
       password: env.db.password,
       database: env.db.database,
-      models: [User, Product, Order, OrderDetail],
+      models: [User, Product, Order, OrderDetail, Basket, BasketDetail],
     }),
     UsersModule,
     AuthModule,

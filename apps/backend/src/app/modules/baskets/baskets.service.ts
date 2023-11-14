@@ -40,6 +40,8 @@ export class BasketsService {
 
     const basketDetailProps = this.createBasketDetailProps(products, basketId);
 
+    console.log({ basketDetailProps });
+
     const basketDetails = await this.basketsDetailRepository.createMany(
       basketDetailProps
     );
@@ -67,7 +69,7 @@ export class BasketsService {
   }
 
   private calculateTotalAmount(products: Array<Product>): number {
-    return products.reduce((a, b) => a + b.price, 0);
+    return products.reduce((a, b) => a + Number(b.price), 0);
   }
 
   private createBasketDetailProps(

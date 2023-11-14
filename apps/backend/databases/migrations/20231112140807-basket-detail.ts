@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return await queryInterface.createTable("order_details", {
+    return await queryInterface.createTable("basket_details", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -59,6 +59,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return await queryInterface.dropTable("basket-detail");
+    return await queryInterface.dropTable("basket_details");
   },
 };
